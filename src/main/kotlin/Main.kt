@@ -13,41 +13,50 @@ import screens.Screen
 @Preview
 @Composable
 fun App() {
+    // Create a mutable state to keep track of the current screen
     var currentScreen by remember { mutableStateOf(Screen.Home) }
-        Box(
-            modifier = Modifier.paint(
-                painter = painterResource("background.png"),
-                alpha = 1f,
-                contentScale = ContentScale.FillBounds
+
+    // A Box composable containing my app's content
+    Box(
+        modifier = Modifier.paint(
+            painter = painterResource("background.png"),
+            alpha = 1f,
+            contentScale = ContentScale.FillBounds
+        )
+    ) {
+        // Depending on the currentScreen value, display either the HomeScreen or FirstScreen
+        // I tried to use this navigation approach because I don't find more information about navigation in Compose Desktop
+        when (currentScreen) {
+            Screen.Home -> HomeScreen(
+                onNavigate = { newScreen ->
+                    currentScreen = newScreen
+                }
             )
-        ) {
-            when (currentScreen) {
-                Screen.Home -> HomeScreen(
-                    onNavigate = { newScreen ->
-                        currentScreen = newScreen
-                    }
-                )
-                Screen.First -> FirstScreen(
-                    onNavigate = { newScreen ->
-                        currentScreen = newScreen
-                    }
-                )
-            }
+            Screen.First -> FirstScreen(
+                onNavigate = { newScreen ->
+                    currentScreen = newScreen
+                }
+            )
         }
     }
+}
 
 fun main() = application {
+    // Define the initial window state, maximized in this case
+    // Because I want my app to be displayed in full screen once you open it
     val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
+    // Create the main application window
     Window(
         onCloseRequest = ::exitApplication,
         title = "InstantMemory",
         state = windowState,
-        resizable = true, // Allow window resizing
-        icon = painterResource("logo.bmp")
+        resizable = true,
+        icon = painterResource("logo.svg")
     ) {
-        App()
+        App() // Call the App() Composable function to build and display the app content
     }
 }
+
 
 
 

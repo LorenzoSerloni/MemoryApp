@@ -13,68 +13,95 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun HomeScreen(onNavigate: (Screen) -> Unit) {
-    val logoPainter = painterResource("logo.png")
+    val logoPainter = painterResource("logo.svg")
+    // Create a VerticalScrollableList composable in order to make the content scrollable for small screens
     VerticalScrollableList(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 100.dp),
         content = {
+            // Create a Column composable to arrange all the title the description and the buttons for the topics vertically
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(80.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Create a Row composable to arrange the title and the logo horizontally
                 Row(
                     modifier = Modifier
-                        .padding(top = 20.dp)
-                        .align(Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                Text(
-                    "InstantMemory",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 104.sp
-                )
-                Image(
-                    painter = logoPainter,
-                    contentDescription = "Logo",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(start = 20.dp, top = 20.dp)
-                )
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .heightIn(min = 100.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    MaterialTheme {
+                        Text(
+                            "InstantMemory",
+                            fontWeight = FontWeight.Bold,
+                            style = typography.h1,
+                            color = Color(255, 255, 255)
+                        )
+                    }
+                    Image(
+                        painter = logoPainter,
+                        contentDescription = "Logo",
+                        modifier = Modifier
+                            .size(150.dp)
+                            .padding(start = 20.dp, top = 30.dp),
+                    )
                 }
-                Text(
-                    "Choose a topic:",
-                    modifier = Modifier
-                        .padding(top = 40.dp)
-                        .align(Alignment.CenterHorizontally),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 34.sp
-                )
-                Spacer(modifier = Modifier.height(130.dp))
+                // Create a Text composable to display the description of the app
+                MaterialTheme {
+                    Text(
+                        "Choose a topic:",
+                        modifier = Modifier
+                            .padding(top = 40.dp)
+                            .fillMaxWidth(),
+                        fontWeight = FontWeight.Bold,
+                        style = typography.h4,
+                        color = Color(255, 255, 255),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            // Create a Column composable to arrange the rows of 3 buttons for the topics vertically one below the others
+            Column(modifier = Modifier
+                .fillMaxHeight()
+                .padding(top = 40.dp, bottom = 40.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
+            {
                 TopicButtons(
                     topics = listOf("Animals", "Fruits & Vegetables", "School objects"),
-                    onNavigate = onNavigate
+                    onNavigate = onNavigate,
+                    nameImages = listOf("animals.png", "fruits.png", "school.png"),
                 )
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(26.dp))
                 TopicButtons(
                     topics = listOf("Clothes", "Jobs", "Toys"),
-                    onNavigate = onNavigate
+                    onNavigate = onNavigate,
+                    nameImages = listOf("clothes.png", "jobs.png", "toys.png"),
                 )
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(26.dp))
                 TopicButtons(
-                    topics = listOf("Foods", "Actions", "Fruits & Vegetables"),
-                    onNavigate = onNavigate
+                    topics = listOf("Foods", "Actions", "Letters & Numbers"),
+                    onNavigate = onNavigate,
+                    nameImages = listOf("foods.png", "actions.png", "letters.png"),
                 )
             }
         }
@@ -82,42 +109,79 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
 }
 
 @Composable
+// Create a TopicButtons composable to display the buttons for the topics in order to make the code more readable
 fun TopicButtons(
     topics: List<String?>,
-    onNavigate: (Screen) -> Unit
+    onNavigate: (Screen) -> Unit,
+    nameImages: List<String>
 ) {
+    // Create a Row composable to arrange the buttons for the topics horizontally and use the space evenly to make it more responsive, but I'm not completely satisfied with the result
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         topics.filterNotNull().forEach { topic ->
+            val nameImage = nameImages[topics.indexOf(topic)]
+            // Create a Button composable for each topic
             Button(
                 onClick = { onNavigate(Screen.First) },
                 shape = RoundedCornerShape(20.dp),
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .heightIn(min = 100.dp)
-                    .weight(1f),
+                    .heightIn(min = 120.dp)
+                    .weight(1f)
+                    .padding(start = 40.dp, end = 40.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(34, 113, 173)
-                )
+                ),
             ) {
-                Text(text = topic, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = topic.orEmpty(),
+                        fontWeight = FontWeight.Bold,
+                        color = Color(255, 255, 255),
+                        textAlign = TextAlign.Left,
+                        style = typography.h4,
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .fillMaxWidth(0.7f)
+                    )
+                    val nameImage = nameImages[topics.indexOf(topic)]
+                    Image(
+                        painter = painterResource(nameImage),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .widthIn(min = 80.dp, max = 150.dp)
+                            .height(80.dp)
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        contentScale = ContentScale.FillWidth,
+                        alignment = Alignment.Center
+                    )
+                }
             }
         }
     }
 }
 
+
 @Composable
+// Create a VerticalScrollableList composable in order to make the content scrollable for small screens
 fun VerticalScrollableList(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Column(
         modifier = modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         content()
     }

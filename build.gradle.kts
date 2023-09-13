@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.bumble.appyx:appyx-navigation-desktop:2.0.0-alpha04")
+    implementation("org.jetbrains.compose.material3:material3-desktop:1.2.1")
     implementation(compose.desktop.currentOs)
 }
 

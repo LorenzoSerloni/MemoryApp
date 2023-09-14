@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -29,7 +30,8 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
     VerticalScrollableList(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 100.dp),
+            .padding(top = 80.dp)
+            .aspectRatio(1.7f, matchHeightConstraintsFirst = true),
         content = {
             // Create a Column composable to arrange all the title the description and the buttons for the topics vertically
             Column(
@@ -52,8 +54,8 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
                         Text(
                             "InstantMemory",
                             fontWeight = FontWeight.Bold,
+                            color = Color(207, 227, 242),
                             style = typography.h1,
-                            color = Color(255, 255, 255)
                         )
                     }
                     Image(
@@ -61,7 +63,7 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
                         contentDescription = "Logo",
                         modifier = Modifier
                             .size(150.dp)
-                            .padding(start = 20.dp, top = 30.dp),
+                            .padding(start = 20.dp, top = 30.dp)
                     )
                 }
                 // Create a Text composable to display the description of the app
@@ -70,20 +72,20 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
                         "Choose a topic:",
                         modifier = Modifier
                             .padding(top = 40.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .alpha(0.99f),
                         fontWeight = FontWeight.Bold,
                         style = typography.h4,
-                        color = Color(255, 255, 255),
+                        color = Color(207, 227, 242),
                         textAlign = TextAlign.Center
                     )
                 }
             }
             // Create a Column composable to arrange the rows of 3 buttons for the topics vertically one below the others
             Column(modifier = Modifier
-                .fillMaxHeight()
-                .padding(top = 40.dp, bottom = 40.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(40.dp),
+                verticalArrangement = Arrangement.SpaceEvenly,
             )
             {
                 TopicButtons(
@@ -91,13 +93,17 @@ fun HomeScreen(onNavigate: (Screen) -> Unit) {
                     onNavigate = onNavigate,
                     nameImages = listOf("animals.png", "fruits.png", "school.png"),
                 )
-                Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier
+                    .aspectRatio(25f, matchHeightConstraintsFirst = true)
+                )
                 TopicButtons(
                     topics = listOf("Clothes", "Jobs", "Toys"),
                     onNavigate = onNavigate,
                     nameImages = listOf("clothes.png", "jobs.png", "toys.png"),
                 )
-                Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier
+                    .aspectRatio(25f, matchHeightConstraintsFirst = true)
+                )
                 TopicButtons(
                     topics = listOf("Foods", "Actions", "Letters & Numbers"),
                     onNavigate = onNavigate,
@@ -123,65 +129,69 @@ fun TopicButtons(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         topics.filterNotNull().forEach { topic ->
-            val nameImage = nameImages[topics.indexOf(topic)]
-            // Create a Button composable for each topic
-            Button(
-                onClick = { onNavigate(Screen.First) },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 120.dp)
-                    .weight(1f)
-                    .padding(start = 40.dp, end = 40.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(34, 113, 173)
-                ),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = topic.orEmpty(),
-                        fontWeight = FontWeight.Bold,
-                        color = Color(255, 255, 255),
-                        textAlign = TextAlign.Left,
-                        style = typography.h4,
-                        modifier = Modifier
-                            .padding(start = 20.dp)
-                            .fillMaxWidth(0.7f)
-                    )
-                    val nameImage = nameImages[topics.indexOf(topic)]
-                    Image(
-                        painter = painterResource(nameImage),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .widthIn(min = 80.dp, max = 150.dp)
-                            .height(80.dp)
-                            .fillMaxHeight()
-                            .padding(8.dp),
-                        contentScale = ContentScale.FillWidth,
-                        alignment = Alignment.Center
-                    )
-                }
+            val imageName = nameImages[topics.indexOf(topic)]
+            val multipleAction = {
+                onNavigate(Screen.First)
+                ChoiceInfo.info.category = topic
             }
+                    // Create a Button composable for each topic
+                    Button(
+                        onClick = { multipleAction() },
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 80.dp, max = 140.dp)
+                            .weight(1.5f)
+                            .padding(start = 40.dp, end = 40.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(207, 227, 242),
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start=20.dp, end=20.dp),
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = topic,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0, 0, 0),
+                                textAlign = TextAlign.Left,
+                                style = typography.h4,
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .fillMaxWidth(0.7f)
+                            )
+                            Image(
+                                painter = painterResource(imageName),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .widthIn(min = 80.dp, max = 150.dp)
+                                    .height(80.dp)
+                                    .fillMaxHeight()
+                                    .padding(8.dp),
+                                contentScale = ContentScale.FillWidth,
+                                alignment = Alignment.Center
+                            )
+                        }
+                    }
+        }
         }
     }
-}
-
 
 @Composable
 // Create a VerticalScrollableList composable in order to make the content scrollable for small screens
 fun VerticalScrollableList(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    modifier: Modifier = Modifier.fillMaxSize(),
+    content: @Composable () -> Unit,
+    layout: Arrangement.Vertical = Arrangement.SpaceEvenly
 ) {
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = layout
     ) {
         content()
     }

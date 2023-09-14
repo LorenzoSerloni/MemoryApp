@@ -1,13 +1,16 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.*
 import screens.FirstScreen
 import screens.HomeScreen
+import screens.SecondScreen
 import screens.Screen
 
 @Preview
@@ -17,12 +20,10 @@ fun App() {
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
     // A Box composable containing my app's content
-    Box(
-        modifier = Modifier.paint(
-            painter = painterResource("background.png"),
-            alpha = 1f,
-            contentScale = ContentScale.FillBounds
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(123, 168, 202)),
     ) {
         // Depending on the currentScreen value, display either the HomeScreen or FirstScreen
         // I tried to use this navigation approach because I don't find more information about navigation in Compose Desktop
@@ -30,12 +31,17 @@ fun App() {
             Screen.Home -> HomeScreen(
                 onNavigate = { newScreen ->
                     currentScreen = newScreen
-                }
+                },
             )
             Screen.First -> FirstScreen(
                 onNavigate = { newScreen ->
                     currentScreen = newScreen
                 }
+            )
+            Screen.Second -> SecondScreen(
+                onNavigate = { newScreen ->
+                    currentScreen = newScreen
+                },
             )
         }
     }

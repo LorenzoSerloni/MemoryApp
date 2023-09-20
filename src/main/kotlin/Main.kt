@@ -1,24 +1,23 @@
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.window.*
-import screens.FirstScreen
-import screens.HomeScreen
-import screens.SecondScreen
-import screens.Screen
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import screens.*
 
 @Preview
 @Composable
 fun App() {
     // Create a mutable state to keep track of the current screen
     var currentScreen by remember { mutableStateOf(Screen.Home) }
-
     // A Box composable containing my app's content
     Column(
         modifier = Modifier
@@ -39,6 +38,11 @@ fun App() {
                 }
             )
             Screen.Second -> SecondScreen(
+                onNavigate = { newScreen ->
+                    currentScreen = newScreen
+                },
+            )
+            Screen.GameScreen -> GameScreen(
                 onNavigate = { newScreen ->
                     currentScreen = newScreen
                 },

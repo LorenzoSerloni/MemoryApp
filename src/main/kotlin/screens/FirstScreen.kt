@@ -15,92 +15,77 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-@Preview
+
 @Composable
 fun FirstScreen( onNavigate: (Screen) -> Unit ) {
     Row(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        OutlinedButton(
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-            border = BorderStroke(0.dp, Color.Transparent),
-                onClick = { onNavigate(Screen.Home) },
-                modifier = Modifier
-                    .size(90.dp)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                shape = CircleShape,
-            ) {
-                Icon(
-                    painter = painterResource("vector.svg"),
-                    contentDescription = "Back",
-                    tint = Color(207, 227, 242),
+        BackButton(onNavigate = onNavigate, previousScreen = Screen.Home)
+        VerticalScrollableList(
+            layout = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxSize(),
+            content = {
+                // Create a Column composable to arrange all the title, the description, and the buttons for the topics vertically
+                Column(
                     modifier = Modifier
-                        .size(90.dp)
-                )
-            }
-            VerticalScrollableList(
-                layout = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxSize(),
-                content = {
-                    // Create a Column composable to arrange all the title, the description, and the buttons for the topics vertically
+                        .fillMaxSize()
+                        .padding(end = 26.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Choose your difficulty level",
+                        style = typography.h2,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(207, 227, 242),
+                    )
+                    Spacer(modifier = Modifier.aspectRatio(15f, matchHeightConstraintsFirst = true))
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(end = 16.dp),
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(
-                            text = "Choose your difficulty level",
-                            style = typography.h2,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(207, 227, 242),
+                        CustomButtons(
+                            onNavigate = onNavigate,
+                            difficultyLevel = Pair("Easy",0),
+                            iconNumber = 1,
+                            levelColor = Color(173, 223, 172),
                         )
-                        Spacer(modifier = Modifier.aspectRatio(15f, matchHeightConstraintsFirst = true))
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            CustomButtons(
-                                onNavigate = onNavigate,
-                                difficultyLevel = "Easy",
-                                iconNumber = 1,
-                                levelColor = Color(173, 223, 172),
-                            )
-                            Spacer(modifier = Modifier.height(80.dp))
-                            CustomButtons(
-                                onNavigate = onNavigate,
-                                difficultyLevel = "Medium",
-                                iconNumber = 2,
-                                levelColor = Color(255, 216, 142),
-                            )
-                            Spacer(modifier = Modifier.height(80.dp))
-                            CustomButtons(
-                                onNavigate = onNavigate,
-                                difficultyLevel = "Hard",
-                                iconNumber = 3,
-                                levelColor = Color(255, 157, 176),
-                            )
-                        }
+                        Spacer(modifier = Modifier.height(80.dp))
+                        CustomButtons(
+                            onNavigate = onNavigate,
+                            difficultyLevel = Pair("Medium",1),
+                            iconNumber = 2,
+                            levelColor = Color(255, 216, 142),
+                        )
+                        Spacer(modifier = Modifier.height(80.dp))
+                        CustomButtons(
+                            onNavigate = onNavigate,
+                            difficultyLevel = Pair("Hard",2),
+                            iconNumber = 3,
+                            levelColor = Color(255, 157, 176),
+                        )
                     }
                 }
-            )
-        }
+            }
+        )
     }
+}
 
 @Composable
 fun CustomButtons(
     onNavigate: (Screen) -> Unit,
-    difficultyLevel: String,
+    difficultyLevel: Pair<String,Int>,
     iconNumber: Int,
     levelColor: Color
 ){
     val multipleAction1 = {
-        onNavigate(Screen.First)
+        onNavigate(Screen.Second)
         ChoiceInfo.info.difficulty = difficultyLevel
     }
     Button(
@@ -121,7 +106,7 @@ fun CustomButtons(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Text(text = difficultyLevel, style = typography.h2, fontWeight = FontWeight.SemiBold, color = Color(255, 255, 255))
+            Text(text = difficultyLevel.first, style = typography.h2, fontWeight = FontWeight.SemiBold, color = Color(255, 255, 255))
             Spacer(modifier = Modifier.width(80.dp))
             Row(
                 modifier = Modifier
@@ -138,5 +123,29 @@ fun CustomButtons(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BackButton(
+    onNavigate: (Screen) -> Unit,
+    previousScreen: Screen
+){
+    OutlinedButton(
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        border = BorderStroke(0.dp, Color.Transparent),
+        onClick = { onNavigate(previousScreen)},
+        modifier = Modifier
+            .size(90.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+        shape = CircleShape,
+    ) {
+        Icon(
+            painter = painterResource("vector.svg"),
+            contentDescription = "Back",
+            tint = Color(207, 227, 242),
+            modifier = Modifier
+                .size(90.dp)
+        )
     }
 }

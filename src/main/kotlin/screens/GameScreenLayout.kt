@@ -56,7 +56,7 @@ fun TopBar(onNavigate: (Screen) -> Unit, turn: Float, score: Int){
 }
 
 @Composable
-fun BottomBarPlayers2(onNavigate: (Screen) -> Unit, turn: Float, score: Int){
+fun BottomBarPlayers2( turn: Float, score: Int){
     Box(
         modifier = Modifier
             .background(Color(207, 227, 242).copy(alpha = turn))

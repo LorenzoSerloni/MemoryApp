@@ -40,7 +40,7 @@ fun GameScreen(onNavigate: (Screen) -> Unit) {
     TopBar(onNavigate, turn, score)
     playingCard(numCards)
     val gameSessionList = CurrentGameCards.gameSession.toList()
-    var duplicatedGameSession = (gameSessionList + gameSessionList).shuffled()
+    val duplicatedGameSession = (gameSessionList + gameSessionList).shuffled()
     Box(
         modifier = Modifier
             .fillMaxHeight(0.8f)
@@ -64,7 +64,7 @@ fun GameScreen(onNavigate: (Screen) -> Unit) {
                     val index = i % duplicatedGameSession.size
                     FlippableCard(duplicatedGameSession[index], onCardClicked = {
                         duplicatedGameSession[index].isFaceUp = !duplicatedGameSession[index].isFaceUp
-                    }, ChoiceInfo.info.difficulty.second.toInt())
+                    }, ChoiceInfo.info.difficulty.second)
                 }
             }
             Row(
@@ -76,14 +76,14 @@ fun GameScreen(onNavigate: (Screen) -> Unit) {
                     val index = i % duplicatedGameSession.size
                     FlippableCard(duplicatedGameSession[index], onCardClicked = {
                         duplicatedGameSession[index].isFaceUp = !duplicatedGameSession[index].isFaceUp
-                    }, ChoiceInfo.info.difficulty.second.toInt())
+                    }, ChoiceInfo.info.difficulty.second)
                 }
             }
         }
     }
 
     if (ChoiceInfo.info.players.toInt() == 2) {
-        BottomBarPlayers2(onNavigate, turn, score)
+        BottomBarPlayers2( turn, score )
     } else {
         BottomBar()
     }

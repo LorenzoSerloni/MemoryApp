@@ -5,7 +5,7 @@ import gamecards.GamingCard
 import images.*
 fun playingCard(cardNumber: Int) {
     var counter = cardNumber
-    var randomId: Int = 0
+    var randomId: Int
     for (i in 1..counter) {
         randomId = numberGenerator()
         val cardCopy = GamingCard(0, "", "")

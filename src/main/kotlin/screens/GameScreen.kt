@@ -27,16 +27,15 @@ import gamecards.GamingCard
 fun GameScreen(onNavigate: (Screen) -> Unit) {
     var turn by remember { mutableStateOf(0.90F) }
     var score by remember { mutableStateOf(0) }
-    val numCards by remember {
-        mutableStateOf(
-            when (ChoiceInfo.info.difficulty.second) {
-                0 -> 6
-                1 -> 8
-                2 -> 10
-                else -> 6
-            }
-        )
-    }
+    val numCards by remember { mutableStateOf (when(ChoiceInfo.info.difficulty.second){
+            0 -> 6
+            1 -> 8
+            2 -> 10
+            else -> 6
+        } ) }
+    val choosenCards = arrayListOf<GamingCard>()
+    var found by remember { mutableStateOf(false) }
+    var flag by remember { mutableStateOf(false) }
     TopBar(onNavigate, turn, score)
     playingCard(numCards)
     val gameSessionList = CurrentGameCards.gameSession.toList()
@@ -64,6 +63,20 @@ fun GameScreen(onNavigate: (Screen) -> Unit) {
                     val index = i % duplicatedGameSession.size
                     FlippableCard(duplicatedGameSession[index], onCardClicked = {
                         duplicatedGameSession[index].isFaceUp = !duplicatedGameSession[index].isFaceUp
+                        if(choosenCards.size <= 2) {
+                            choosenCards.add(duplicatedGameSession[index])
+                            if(choosenCards.size == 2) {
+                                if(choosenCards[0].name == choosenCards[1].name) {
+                                    choosenCards[0].isMatched = 1
+                                    choosenCards[1].isMatched = 1
+                                } else {
+                                    choosenCards[0].isMatched = 2
+                                    choosenCards[1].isMatched = 2
+                                    // qui vanno rigirate le carte
+                                }
+                                choosenCards.clear()
+                            }
+                        }
                     }, ChoiceInfo.info.difficulty.second)
                 }
             }
@@ -76,6 +89,20 @@ fun GameScreen(onNavigate: (Screen) -> Unit) {
                     val index = i % duplicatedGameSession.size
                     FlippableCard(duplicatedGameSession[index], onCardClicked = {
                         duplicatedGameSession[index].isFaceUp = !duplicatedGameSession[index].isFaceUp
+                        if(choosenCards.size <= 2) {
+                            choosenCards.add(duplicatedGameSession[index])
+                            if(choosenCards.size == 2) {
+                                if(choosenCards[0].name == choosenCards[1].name) {
+                                    choosenCards[0].isMatched = 1
+                                    choosenCards[1].isMatched = 1
+                                } else {
+                                    choosenCards[0].isMatched = 2
+                                    choosenCards[1].isMatched = 2
+                                    // qui vanno rigirate le carte
+                                }
+                                choosenCards.clear()
+                            }
+                        }
                     }, ChoiceInfo.info.difficulty.second)
                 }
             }
@@ -107,6 +134,7 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
         targetValue = if (rotated) 1f else 0f,
         animationSpec = tween(300)
     )
+    if(card.isMatched == 0) {
     Card(
         when(size){
             0 -> Modifier
@@ -117,8 +145,12 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                     rotationY = rotation
                     cameraDistance = 8 * density
                 }.clickable {
-                    rotated = !rotated
+                    rotated = true
                     onCardClicked()
+                    if (card.isMatched == 2){
+                        rotated = false
+                        card.isMatched = 0
+                    }
                 }
             1 -> Modifier
                 .height(300.dp)
@@ -129,8 +161,12 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                     cameraDistance = 8 * density
                 }
                 .clickable {
-                    rotated = !rotated
+                    rotated = true
                     onCardClicked()
+                    if (card.isMatched == 2){
+                        rotated = false
+                        card.isMatched = 0
+                    }
                 }
             2 -> Modifier
                 .height(250.dp)
@@ -141,8 +177,12 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                     cameraDistance = 8 * density
                 }
                 .clickable {
-                    rotated = !rotated
+                    rotated = true
                     onCardClicked()
+                    if (card.isMatched == 2){
+                        rotated = false
+                        card.isMatched = 0
+                    }
                 }
             else -> Modifier
                 .height(350.dp)
@@ -153,8 +193,12 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                     cameraDistance = 8 * density
                 }
                 .clickable {
-                    rotated = !rotated
+                    rotated = true
                     onCardClicked()
+                    if (card.isMatched == 2){
+                        rotated = false
+                        card.isMatched = 0
+                    }
                 }
         },
         shape = RoundedCornerShape(35.dp),
@@ -176,7 +220,6 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                             .height(250.dp)
                             .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
                     )
-
                     1 -> Image(
                         painter = painterResource(card.fileName),
                         contentDescription = null,
@@ -186,7 +229,6 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                             .height(200.dp)
                             .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
                     )
-
                     2 -> Image(
                         painter = painterResource(card.fileName),
                         contentDescription = null,
@@ -250,6 +292,55 @@ fun FlippableCard(card: GamingCard, onCardClicked: () -> Unit, size : Int) {
                     .fillMaxSize()
                     .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
             )
+        }
+    }
+        if (card.isMatched == 1) {
+            Card(
+                when(size){
+                    0 -> Modifier
+                        .height(350.dp)
+                        .width(250.dp)
+                        .padding(15.dp)
+                        .graphicsLayer {
+                            rotationY = rotation
+                            cameraDistance = 8 * density
+                        }
+                    1 -> Modifier
+                        .height(300.dp)
+                        .width(200.dp)
+                        .padding(8.dp)
+                        .graphicsLayer {
+                            rotationY = rotation
+                            cameraDistance = 8 * density
+                        }
+                    2 -> Modifier
+                        .height(250.dp)
+                        .width(160.dp)
+                        .padding(6.dp)
+                        .graphicsLayer {
+                            rotationY = rotation
+                            cameraDistance = 8 * density
+                        }
+
+                    else -> Modifier
+                        .height(350.dp)
+                        .width(150.dp)
+                        .padding(10.dp)
+                        .graphicsLayer {
+                            rotationY = rotation
+                            cameraDistance = 8 * density
+                        }
+
+                },
+                shape = RoundedCornerShape(35.dp),
+                elevation = 8.dp,
+                backgroundColor = Color.Transparent
+            ){
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                        .background(Color.Transparent),
+                ){}
+            }
         }
     }
 }

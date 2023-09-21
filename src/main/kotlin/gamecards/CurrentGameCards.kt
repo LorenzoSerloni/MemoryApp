@@ -15,5 +15,6 @@ data class GamingCard(
     var id: Int,
     var name: String,
     var fileName: String,
-    var isFaceUp: Boolean = false
+    var isFaceUp: Boolean = false,
+    var isMatched: Int = 0
 )
